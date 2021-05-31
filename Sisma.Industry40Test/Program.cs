@@ -45,7 +45,8 @@ namespace Sisma.Industry40Test
                 do
                 {
                     Console.WriteLine();
-                    Console.WriteLine(" > Press 'C' to connect, 'D' to disconnect, 'S' to read machine status, 'I' to send info message");
+                    Console.WriteLine(" > Press 'C' to connect, 'D' to disconnect");
+                    Console.WriteLine(" > Press 'S' to read machine status, 'R' to read all machine messages, 'I' to send info message");
                     Console.WriteLine(" > Press 'Q' to close program");
                     Console.WriteLine();
                     command = Console.ReadLine();
@@ -152,6 +153,31 @@ namespace Sisma.Industry40Test
                                 }
                                 else
                                     Console.WriteLine("Invalid machine type!");
+                            }
+                        }
+                        else if (command.Equals("R", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            if (_client == null || !_client.IsConnected)
+                                Console.WriteLine("Connect client before send info message!");
+                            else
+                            {
+                                // subscribe to a topic
+                                Console.WriteLine("Insert machine serial:");
+                                serial = Console.ReadLine();
+
+                                string topic = "Sisma/" + serial + "/#" ;
+                                Subscribe(topic);
+
+                                // unsubscribe from topic and go back to menu
+                                string unsub;
+                                do
+                                {
+                                    Console.WriteLine("Press 'Q' to unsubscribe to generic machine topic and go back to menu:");
+                                    unsub = Console.ReadLine();
+
+                                } while (!unsub.Equals("Q", StringComparison.CurrentCultureIgnoreCase));
+
+                                Unsubscribe(topic);
                             }
                         }
                         else
